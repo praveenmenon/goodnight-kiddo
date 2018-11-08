@@ -1,0 +1,38 @@
+{
+  "name": "goodnight-kiddo",
+  "version": "1.0.0",
+  "description": "Alexa Skill for Goodnight Kiddo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Qwinix/Goodnight-Kiddo.git"
+  },
+  "author": "ajay/praveen @ qwinix",
+  "license": "ISC",
+  "dependencies": {
+    "ask-sdk-core": "^2.0.0",
+    "ask-sdk-model": "^1.0.0",
+    "buffer": "^5.0.7",
+    "eslint": "^4.19.0",
+    "eslint-plugin-node": "^6.0.1",
+    "js-yaml": "^3.10.0",
+    "lodash": "^4.17.4",
+    "unidecode": "^0.1.8"
+  },
+  "devDependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^4.0.0",
+    "gulp-mocha": "^4.3.1",
+    "gulp-sequence": "^0.4.6",
+    "gulp-unzip": "^0.2.0",
+    "gulp-zip": "^4.0.0",
+    "modclean": "^2.1.0",
+    "serverless": "^1.26.1",
+    "serverless-gulp": "^1.0.9",
+    "serverless-plugin-optimize": "^3.0.3-rc.1"
+  }
+}

@@ -1,0 +1,15 @@
+# Logs
+logs
+*.log
+
+# Dependency directories
+lambda/custom/node_modules/
+tmp-ozip/
+tmp-pkg/
+
+lambda/custom/package-lock.json
+lambda/custom/serverless.env.yml
+lambda/custom/goodnightKiddoSkillConfig.json
+lambda/custom/.eslintrc
+lambda/custom/.eslintrc.json
+lambda/custom/.eslintrc.js
