@@ -1,7 +1,7 @@
 {
   "deploy_settings": {
     "meditationstudioapp": {
-      "skill_id": "",
+      "skill_id": "amzn1.ask.skill.ae82c69e-df56-45db-ae4b-fbd390d57282",
       "was_cloned": false,
       "merge": {
         "manifest": {
@@ -13,6 +13,27 @@
             }
           }
         }
+      },
+      "resources": {
+        "manifest": {
+          "eTag": "98ca334f232ddd3eb923200640ec0afa"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "83eb3e6533018d9b78e921c58d69bcb5"
+          }
+        },
+        "lambda": [
+          {
+            "arn": "arn:aws:lambda:us-east-1:316322997689:function:ask-custom-goodnight-kiddo-meditationstudioapp",
+            "functionName": "arn:aws:lambda:us-east-1:316322997689:function:ask-custom-goodnight-kiddo-meditationstudioapp",
+            "awsRegion": "us-east-1",
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "revisionId": "3e3eabf6-a462-4cca-88ec-a5a5a50e31da"
+          }
+        ]
       }
     }
   }

@@ -2,20 +2,21 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk-core');
-const MeditationModule = require('./lib/MeditationModule');
-const RandomModule = require('./lib/RandomInsertsModule');
-const AudioModule = require('./audio');
-const tableName = goodnightKiddoSkillConfig.table_name;
-const DatabaseHelper = require('./database_helper');
-const databaseHelper = new DatabaseHelper();
-const EchoShowTemplateModule = require('./echoShowTemplate');
-const show = new EchoShowTemplateModule();
+// const MeditationModule = require('./lib/MeditationModule');
+// const RandomModule = require('./lib/RandomInsertsModule');
+// const AudioModule = require('./audio');
+// const tableName = goodnightKiddoSkillConfig.table_name;
+// const DatabaseHelper = require('./database_helper');
+// const databaseHelper = new DatabaseHelper();
+// const EchoShowTemplateModule = require('./echoShowTemplate');
+// const show = new EchoShowTemplateModule();
 
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
+    console.log(JSON.stringify(handlerInput));
     const speechText = 'Welcome to the Alexa Skills Kit, you can say hello!';
 
     return handlerInput.responseBuilder

@@ -1,41 +1,269 @@
 {
-  "interactionModel": {
-    "languageModel": {
-      "invocationName": "greeter",
-      "types": [
-
-      ],
-      "intents": [
-        {
-          "name": "AMAZON.CancelIntent",
-          "samples": [
-
-          ]
-        },
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": [
-
-          ]
-        },
-        {
-          "name": "AMAZON.StopIntent",
-          "samples": [
-
-          ]
-        },
-        {
-          "name": "HelloWorldIntent",
-          "slots": [
-
-          ],
-          "samples": [
-            "hello",
-            "say hello",
-            "say hello world"
-          ]
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "goodnight",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": [
+                        "none",
+                        "neither",
+                        "quit"
+                    ]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PauseIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ResumeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StartOverIntent",
+                    "samples": [
+                        "play from the beginning",
+                        "play from first",
+                        "play from the first",
+                        "startover the song",
+                        "startover the meditation"
+                    ]
+                },
+                {
+                    "name": "AMAZON.LoopOnIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.LoopOffIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NextIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PreviousIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ShuffleOffIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ShuffleOnIntent",
+                    "samples": []
+                },
+                {
+                    "name": "meditationIntent",
+                    "slots": [
+                        {
+                            "name": "MeditationNameSlot",
+                            "type": "MeditationName"
+                        }
+                    ],
+                    "samples": [
+                        "select a meditation from {MeditationNameSlot}",
+                        "want to hear a meditation from {MeditationNameSlot}",
+                        "start a sleep meditation",
+                        "start a kids meditation",
+                        "resume a meditation",
+                        "my {MeditationNameSlot}",
+                        "the {MeditationNameSlot}",
+                        "{MeditationNameSlot} meditation",
+                        "the {MeditationNameSlot} meditation",
+                        "run a {MeditationNameSlot} meditation",
+                        "run {MeditationNameSlot} meditation",
+                        "run a meditation",
+                        "load a {MeditationNameSlot} meditation",
+                        "start a new meditation",
+                        "open a {MeditationNameSlot} meditation",
+                        "play a {MeditationNameSlot} meditation",
+                        "play {MeditationNameSlot}",
+                        "start {MeditationNameSlot}",
+                        "start playing {MeditationNameSlot}",
+                        "select new meditation",
+                        "start a {MeditationNameSlot} meditation",
+                        "load a meditation",
+                        "open a meditation",
+                        "play a meditation",
+                        "start a meditation",
+                        "{MeditationNameSlot}"
+                    ]
+                },
+                {
+                    "name": "arrayNumber",
+                    "slots": [
+                        {
+                            "name": "arrayNumSlot",
+                            "type": "arrayNum"
+                        }
+                    ],
+                    "samples": [
+                        "{arrayNumSlot}",
+                        "the {arrayNumSlot}",
+                        "the {arrayNumSlot} one",
+                        "{arrayNumSlot} one",
+                        "play the {arrayNumSlot} one",
+                        "play the {arrayNumSlot}",
+                        "play the {arrayNumSlot} meditation"
+                    ]
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.RepeatIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.MoreIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateSettingsIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PageUpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PageDownIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollRightIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollDownIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollLeftIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollUpIntent",
+                    "samples": []
+                }
+            ],
+            "types": [
+                {
+                    "name": "MeditationName",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "flying",
+                                "synonyms": [
+                                    "going flying",
+                                    "to fly",
+                                    "fly",
+                                    "go flying"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "clouds",
+                                "synonyms": [
+                                    "cloud",
+                                    "to the cloud",
+                                    "on a cloud",
+                                    "to the clouds",
+                                    "on clouds"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "ocean",
+                                "synonyms": [
+                                    "to the ocean",
+                                    "on the ocean"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "calm",
+                                "synonyms": [
+                                    "find my calm",
+                                    "be calm",
+                                    "get calm"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "arrayNum",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "fourth"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "four"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "three"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "two"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "one"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "first"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "second"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "third"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "last"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
