@@ -5,9 +5,9 @@
         "en-US": {
           "summary": "Sample Short Description",
           "examplePhrases": [
-            "Alexa open hello world",
-            "Alexa tell hello world hello",
-            "Alexa ask hello world say hello"
+            "Alexa open goodnight",
+            "Alexa tell goodnight hello",
+            "Alexa ask goodnight say hello"
           ],
           "name": "goodnight-kiddo",
           "description": "Sample Full Description"

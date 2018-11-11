@@ -1,11 +1,11 @@
 exports.launch = [
-  'hello, there',
-  'hey, there',
+  'hello there',
+  'hey there',
   'howdy',
   'hello',
   'hiya',
   'hey',
-  'hi, there'
+  'hi there'
 ];
 
 exports.launchEnd = [

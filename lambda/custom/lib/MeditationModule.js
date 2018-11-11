@@ -8,30 +8,30 @@ const EchoShowTemplateModule = require('../echoShowTemplate');
 const show = new EchoShowTemplateModule();
 
 function MeditationModule() {
-  this.intentResponse = function(req, res) {
-    const intentSession = res.session('intentName');
-    const arrayNum = req.slot('arrayNumSlot') || '';
-    console.log('arrayNumSlot:', req.slot('arrayNumSlot'));
-    const deviceID = req.data.context.System.device.deviceId;
+  this.intentResponse = function(req) {
+    const session = req.attributesManager.getSessionAttributes();
+    // const intentSession = res.session('intentName');
+    const arrayNum = getResolvedValue(req.requestEnvelope, 'arrayNumSlot') || '';
+    console.log('arrayNumSlot:', getResolvedValue(req.requestEnvelope, 'arrayNumSlot'));
+    const deviceID = req.requestEnvelope.context.System.device.deviceId;
     var response, stream, medNameSlot, cb;
 
-    if (req.slot('MeditationNameSlot')) medNameSlot = SynonymsResolveModule.extract('MeditationNameSlot', req);
-    if (req.data.request.type == 'Display.ElementSelected') medNameSlot = req.selectedElementToken;
-    console.log('request in Meditation intent:', req.data.request);
-    console.log('sessions in Meditation intent:', req.data.session);
-    console.log('req.slot(MeditationNameSlot):', req.slot('MeditationNameSlot'));
-    console.log('req.slot(MeditationName):', req.slot('MeditationName'));
+    // if (getResolvedValue(req.requestEnvelope, 'MeditationNameSlot')) medNameSlot = SynonymsResolveModule.extract('MeditationNameSlot', req);
+    if (req.requestEnvelope.request.type == 'Display.ElementSelected') medNameSlot = getResolvedValue(req.requestEnvelope, 'MeditationNameSlot');
+    console.log('req.slot(MeditationNameSlot):', getResolvedValue(req.requestEnvelope, 'MeditationNameSlot'));
+    console.log('req.slot(MeditationName):', getResolvedValue(req.requestEnvelope, 'MeditationName'));
     console.log('Meditation Name', medNameSlot);
 
-    if (intentSession == 'meditation' || req.data.request.type == 'Display.ElementSelected' || (medNameSlot !== '' || arrayNum !== '') || res.session('counter') == 'true') {
+    if (session.intentName == 'meditation' || req.requestEnvelope.request.type == 'Display.ElementSelected' || (medNameSlot !== '' || arrayNum !== '') || session.counter == 'true') {
       console.log('✅');
 
       if (medNameSlot || arrayNum) {
-        console.log('Meditation name slot inside if condn.', req.slot('MeditationNameSlot'));
-        var calm = (req.session('medTypeSession') !== undefined) ? req.session('medTypeSession') : 'calm';
-        var ocean = (req.session('medTypeSession') !== undefined) ? req.session('medTypeSession') : 'ocean';
-        var clouds = (req.session('medTypeSession') !== undefined) ? req.session('medTypeSession') : 'clouds';
-        var flying = (req.session('medTypeSession') !== undefined) ? req.session('medTypeSession') : 'flying';
+        console.log('Meditation name slot inside if condn.', getResolvedValue(req.requestEnvelope, 'MeditationNameSlot'));
+        var calm = session.medTypeSession !== undefined ? session.medTypeSession : 'calm';
+        var ocean = session.medTypeSession !== undefined ? session.medTypeSession : 'ocean';
+        var clouds = session.medTypeSession !== undefined ? session.medTypeSession : 'clouds';
+        var flying = session.medTypeSession !== undefined ? session.medTypeSession : 'flying';
+
         const selectionCondition = medNameSlot || arrayNum;
         var playBackFinished = 'false';
         var audioName, cardTitle, cardText, nextAudio, prevAudio, backgroundImage;
@@ -133,10 +133,10 @@ function MeditationModule() {
           });
 
           return promise.then((successMessage) => {
-            cb = function(res) {
+            cb = function(req) {
               var start;
 
-              if (req.session('cancelSession')) {
+              if (session.cancelSession) {
                 start = 'You\'ve selected';
               } else {
                 start = RandomModule.meditationFirst[Math.floor(Math.random() * RandomModule.meditationFirst.length)];
@@ -144,7 +144,7 @@ function MeditationModule() {
 
               var end = RandomModule.meditationLast[Math.floor(Math.random() * RandomModule.meditationLast.length)];
               var resp = start + ' ' + response + ' ' + end + ' <break time=\"3.00s\"/>';
-              if (req.data.context.System.device.supportedInterfaces.Display) {
+              if (req.requestEnvelope.context.System.device.supportedInterfaces.Display) {
                 const playTemplate = [{
                   'type': 'AudioPlayer.Play',
                   'playBehavior': 'REPLACE_ALL',
@@ -170,19 +170,17 @@ function MeditationModule() {
                     }
                   }
                 }];
-                res.response.response.directives = playTemplate;
+                req.responseBuilder.addDirective(playTemplate);
               } else {
-                res.audioPlayerPlayStream('REPLACE_ALL', stream);
+                // have to change this to new sdk
+                req.responseBuilder.addAudioPlayerPlayDirective('REPLACE_ALL', stream);
               }
-              res.say(resp).card({
-                type: 'Standard',
-                title: cardTitle,
-                text: cardText,
-                image: { //image is optional. Small[720w x 480h px], Large[1200w x 800h px]
-                  smallImageUrl: 'https://s3.amazonaws.com/goodnight-kiddo-alexa-card-images/rsz_ms_gnk_alexa_skill_small.jpg',
-                  largeImageUrl: 'https://s3.amazonaws.com/goodnight-kiddo-alexa-card-images/rsz_ms_gnk_alexa_skill_large.jpg'
-                }
-              }).clearSession(true).shouldEndSession(true);
+              req.responseBuilder.withStandardCard(
+                cardTitle,
+                cardText,
+                'https://s3.amazonaws.com/goodnight-kiddo-alexa-card-images/rsz_ms_gnk_alexa_skill_small.jpg',
+                'https://s3.amazonaws.com/goodnight-kiddo-alexa-card-images/rsz_ms_gnk_alexa_skill_large.jpg'
+              ).withShouldEndSession(true);
             };
             return new Promise((resolve) => {
               resolve({
@@ -193,34 +191,39 @@ function MeditationModule() {
           });
         } else {
           console.log(prompt);
-          cb = function(res) {
-            res.say(prompt).reprompt(prompt).clearSession(true).shouldEndSession(false);
+          cb = function(req) {
+            req.responseBuilder.speak(prompt).reprompt(prompt).withShouldEndSession(false).getResponse();
           };
         }
       } else {
         var start = RandomModule.error[Math.floor(Math.random() * RandomModule.error.length)];
         response = start + ', I didn\'t catch that. I can help you drift off to sweet dreams. Would you like to listen to Calm, Ocean, Clouds or Flying ?';
         console.log(response);
-        cb = function(res) {
-          res.say(response).reprompt(response).shouldEndSession(false);
+        cb = function(req) {
+          req.responseBuilder.speak(response).reprompt(response).withShouldEndSession(false).getResponse();
         };
       }
-    } else if (req.data.request.intent.name == 'meditationIntent') {
+    } else if (req.requestEnvelope.request.intent.name == 'meditationIntent') {
       var start = RandomModule.error[Math.floor(Math.random() * RandomModule.error.length)];
       response = start + ', I didn\'t catch that. I can help you drift off to sweet dreams. Would you like to listen to Calm, Ocean, Clouds or Flying ?';
       console.log(response);
-      cb = function(res) {
-        res.say(response).reprompt(response).session('intentName', 'meditation').session('cancelSession', 'cancel_true').shouldEndSession(false);
+      cb = function(req) {
+        attributes.intentName = 'meditation';
+        attributes.cancelSession = 'cancel_true';
+        return req.responseBuilder.speak(response).reprompt(response).attributesManager.setSessionAttributes(attributes).withShouldEndSession(false);
       };
     } else {
       response = 'I currently do not have any information regarding that.';
-      cb = function(res) {
-        res.say(response).reprompt(response).shouldEndSession(false);
+      cb = function(req) {
+        req.responseBuilder.speak(response).withShouldEndSession(false);
       };
     }
+
     return new Promise((resolve) => {
-      resolve({
-        prompt,
+      console.log("callback:", cb);
+      console.log("prompt:", response);
+      return resolve({
+        response,
         cb
       });
     });
@@ -322,5 +325,26 @@ function MeditationModule() {
       });
     });
   };
+
+  function getResolvedValue(requestEnvelope, slotName) {
+    if (requestEnvelope &&
+      requestEnvelope.request &&
+      requestEnvelope.request.intent &&
+      requestEnvelope.request.intent.slots &&
+      requestEnvelope.request.intent.slots[slotName] &&
+      requestEnvelope.request.intent.slots[slotName].resolutions &&
+      requestEnvelope.request.intent.slots[slotName].resolutions.resolutionsPerAuthority &&
+      requestEnvelope.request.intent.slots[slotName].resolutions.resolutionsPerAuthority[0] &&
+      requestEnvelope.request.intent.slots[slotName].resolutions.resolutionsPerAuthority[0].values &&
+      requestEnvelope.request.intent.slots[slotName].resolutions.resolutionsPerAuthority[0]
+      .values[0] &&
+      requestEnvelope.request.intent.slots[slotName].resolutions.resolutionsPerAuthority[0].values[0]
+      .value &&
+      requestEnvelope.request.intent.slots[slotName].resolutions.resolutionsPerAuthority[0].values[0]
+      .value.name) {
+      return requestEnvelope.request.intent.slots[slotName].resolutions.resolutionsPerAuthority[0].values[0].value.name;
+    }
+    return undefined;
+  }
 }
 module.exports = MeditationModule;
