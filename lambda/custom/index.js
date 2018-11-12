@@ -257,15 +257,14 @@ const ErrorHandler = {
   },
 };
 
-const meditationIntent = {
+const MeditationIntent = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
-      handlerInput.requestEnvelope.request.intent.name === 'meditationIntent';
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' && handlerInput.requestEnvelope.request.intent.name === 'meditationIntent';
   },
   handle(req, error){
     // const response = genericIntentModuleHandler(handlerInput, new MeditationModule());
     // console.log("response in meditation intent:", JSON.stringify(response))
-    const module = new MeditationModule()
+    const module = new MeditationModule();
     var promise = module.intentResponse(req);
     return promise.then(function(results) {
       console.log(" results.cb(req) results:", JSON.stringify(results.cb(req)));
@@ -280,9 +279,44 @@ const genericIntentModuleHandler = function(req, module) {
   var promise = module.intentResponse(req);
   console.log("promise:", promise);
   return promise.then(function(results) {
-    console.log("results:", JSON.stringify(results));
-    return results.cb(req);
+    results.cb(req);
   });
+};
+
+const YesHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent';
+  },
+  handle(handlerInput) {
+    var promise = null;
+    console.log('In YesHandler');
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    const precedingIntentName = sessionAttributes.intentName;
+    const imodule = getModuleByIntent(precedingIntentName);
+
+
+    if (imodule) {
+      promise = imodule.yesIntentResponse(handlerInput);
+      return promise.then(function(intentResponse) {
+        intentResponse.cb(req);
+      });
+    } else {
+      var prompt = 'I did not quite get that. Could you please repeat it?';
+      return intentResponse.responseBuilder.speak(prompt).withShouldEndSession(false).getResponse();
+    }
+  },
+};
+
+
+const getModuleByIntent = function(intentName) {
+  var module = null;
+  if (intentName === 'meditationIntent') {
+    module = new MeditationModule();
+  } else if (intentName === 'launchIntent') {
+    module = new MeditationModule();
+  }
+  return module;
 };
 
 const skillBuilder = Alexa.SkillBuilders.custom();
@@ -294,7 +328,8 @@ exports.handler = skillBuilder
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler,
-    meditationIntent
+    MeditationIntent,
+    YesHandler
   )
   .addErrorHandlers(ErrorHandler)
   .lambda();

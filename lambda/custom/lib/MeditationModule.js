@@ -207,10 +207,10 @@ function MeditationModule() {
       var start = RandomModule.error[Math.floor(Math.random() * RandomModule.error.length)];
       response = start + ', I didn\'t catch that. I can help you drift off to sweet dreams. Would you like to listen to Calm, Ocean, Clouds or Flying ?';
       console.log(response);
+      attributes.intentName = 'meditation';
+      attributes.cancelSession = 'cancel_true';
       cb = function(req) {
-        attributes.intentName = 'meditation';
-        attributes.cancelSession = 'cancel_true';
-        return req.responseBuilder.speak(response).reprompt(response).attributesManager.setSessionAttributes(attributes).withShouldEndSession(false);
+        req.responseBuilder.speak(response).reprompt(response).withShouldEndSession(false);
       };
     } else {
       response = 'I currently do not have any information regarding that.';
@@ -220,9 +220,9 @@ function MeditationModule() {
     }
 
     return new Promise((resolve) => {
-      console.log("callback:", cb);
-      console.log("prompt:", response);
-      return resolve({
+      // console.log("callback:", cb);
+      // console.log("prompt:", response);
+      resolve({
         response,
         cb
       });
@@ -230,10 +230,10 @@ function MeditationModule() {
 
   };
 
-  this.yesIntentResponse = function(req, res) {
+  this.yesIntentResponse = function(req) {
     var prompt, cb;
 
-    const deviceID = req.data.context.System.device.deviceId;
+    const deviceID = req.requestEnvelope.context.System.device.deviceId;
     let promise = new Promise((resolve, reject) => {
       databaseHelper.readAudioState(deviceID, (err, result) => {
         if (err) return reject(err);
@@ -242,7 +242,7 @@ function MeditationModule() {
     });
 
     return promise.then((successMessage) => {
-      cb = function(res) {
+      cb = function(req) {
         console.log(successMessage.audioName);
         const stream = {
           'url': successMessage.url,
@@ -250,7 +250,7 @@ function MeditationModule() {
           'offsetInMilliseconds': successMessage.offset
         };
         console.log('stream', stream);
-        if (req.data.context.System.device.supportedInterfaces.Display) {
+        if (req.requestEnvelope.context.System.device.supportedInterfaces.Display) {
           const playTemplate = [{
             'type': 'AudioPlayer.Play',
             'playBehavior': 'REPLACE_ALL',
@@ -276,13 +276,13 @@ function MeditationModule() {
               }
             }
           }];
-          res.response.response.directives = playTemplate;
+          req.responseBuilder.addDirective(playTemplate);
         } else {
-          res.audioPlayerPlayStream('REPLACE_ALL', stream);
+          req.responseBuilder.addAudioPlayerPlayDirective('REPLACE_ALL', stream);
         }
         var end = RandomModule.meditationLast[Math.floor(Math.random() * RandomModule.meditationLast.length)];
         var response = 'Resuming ' + AudioModule.audioNavigation[stream.token].cardTitle + end;
-        res.say(response).shouldEndSession(true);
+        req.responseBuilder.say(response).shouldEndSession(true);
       };
       return new Promise((resolve) => {
         resolve({
