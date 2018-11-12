@@ -17,7 +17,7 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    console.log("handlerInput: ",JSON.stringify(handlerInput));
+    console.log("handlerInput: ", JSON.stringify(handlerInput));
     const deviceID = handlerInput.requestEnvelope.context.System.device.deviceId;
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     console.log('attributes using attributesManager', attributes);
@@ -56,12 +56,12 @@ const LaunchRequestHandler = {
           case 20:
           case 25:
           case 30:
-          random = RandomModule.frequentUser[Math.floor(Math.random() * RandomModule.frequentUser.length)];
-          prompt = "Welcome back to Goodnight Kiddo. Wow, you've been here " + visitCount + " days in a row! You're a " + random + "! Would you like to play Calm, Ocean, Clouds or Flying today?";
-          break;
+            random = RandomModule.frequentUser[Math.floor(Math.random() * RandomModule.frequentUser.length)];
+            prompt = "Welcome back to Goodnight Kiddo. Wow, you've been here " + visitCount + " days in a row! You're a " + random + "! Would you like to play Calm, Ocean, Clouds or Flying today?";
+            break;
 
           default:
-          prompt = 'Welcome back to Goodnight Kiddo. It\'s time to return to the land of sweet dreams. Would you like to play Calm, Ocean, Clouds or Flying today?';
+            prompt = 'Welcome back to Goodnight Kiddo. It\'s time to return to the land of sweet dreams. Would you like to play Calm, Ocean, Clouds or Flying today?';
         }
 
         if (listenCount) {
@@ -111,13 +111,13 @@ const LaunchRequestHandler = {
           case 20:
           case 25:
           case 30:
-          random = RandomModule.frequentUser[Math.floor(Math.random() * RandomModule.frequentUser.length)];
-          prompt = "Welcome back to Goodnight Kiddo. Wow, you've been here " + visitCount + " days in a row! You're a " + random + '! You were listening to ' + result.audioName + '. Do you want to ' + end;
-          break;
+            random = RandomModule.frequentUser[Math.floor(Math.random() * RandomModule.frequentUser.length)];
+            prompt = "Welcome back to Goodnight Kiddo. Wow, you've been here " + visitCount + " days in a row! You're a " + random + '! You were listening to ' + result.audioName + '. Do you want to ' + end;
+            break;
 
           default:
-          random = RandomModule.launch[Math.floor(Math.random() * RandomModule.launch.length)];
-          prompt = random + '! You were listening to ' + AudioModule.audioNavigation[result.token].tagline + '. Do you want to ' + end;
+            random = RandomModule.launch[Math.floor(Math.random() * RandomModule.launch.length)];
+            prompt = random + '! You were listening to ' + AudioModule.audioNavigation[result.token].tagline + '. Do you want to ' + end;
         }
 
         console.log('result detials:', JSON.stringify((result)));
@@ -154,13 +154,13 @@ const LaunchRequestHandler = {
           case 20:
           case 25:
           case 30:
-          random = RandomModule.frequentUser[Math.floor(Math.random() * RandomModule.frequentUser.length)];
-          prompt = "Welcome back to Goodnight Kiddo. Wow, you've been here " + visitCount + " days in a row! You're a " + random + "! Would you like to play Calm, Ocean, Clouds or Flying today?";
-          break;
+            random = RandomModule.frequentUser[Math.floor(Math.random() * RandomModule.frequentUser.length)];
+            prompt = "Welcome back to Goodnight Kiddo. Wow, you've been here " + visitCount + " days in a row! You're a " + random + "! Would you like to play Calm, Ocean, Clouds or Flying today?";
+            break;
 
           default:
-          random = RandomModule.launch[Math.floor(Math.random() * RandomModule.launch.length)];
-          prompt = random + '! Welcome to Goodnight Kiddo. Sweet dreams are just around the corner. Would you like to listen to Calm, Ocean, Clouds or Flying ?';
+            random = RandomModule.launch[Math.floor(Math.random() * RandomModule.launch.length)];
+            prompt = random + '! Welcome to Goodnight Kiddo. Sweet dreams are just around the corner. Would you like to listen to Calm, Ocean, Clouds or Flying ?';
         }
 
         var start = RandomModule.error[Math.floor(Math.random() * RandomModule.error.length)];
@@ -187,8 +187,8 @@ const LaunchRequestHandler = {
 
 const HelloWorldIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'HelloWorldIntent';
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === 'HelloWorldIntent';
   },
   handle(handlerInput) {
     const speechText = 'Hello World!';
@@ -202,8 +202,8 @@ const HelloWorldIntentHandler = {
 
 const HelpIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
     const speechText = 'You can say hello to me!';
@@ -218,9 +218,9 @@ const HelpIntentHandler = {
 
 const CancelAndStopIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
-        || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent' ||
+        handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
   },
   handle(handlerInput) {
     const speechText = 'Goodbye!';
@@ -262,17 +262,38 @@ const meditationIntent = {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
       handlerInput.requestEnvelope.request.intent.name === 'meditationIntent';
   },
-  handle(req, error){
+  handle(req, error) {
     // const response = genericIntentModuleHandler(handlerInput, new MeditationModule());
     // console.log("response in meditation intent:", JSON.stringify(response))
-    const module = new MeditationModule()
-    var promise = module.intentResponse(req);
-    return promise.then(function(results) {
-      console.log(" results.cb(req) results:", JSON.stringify(results.cb(req)));
-      console.log("results.cb() results:", JSON.stringify(results.cb()));
-      return results.cb();
-    });
+    // const module = new MeditationModule()
+    // var promise = module.intentResponse(req);
+    // return promise.then(function(results) {
+    //   console.log(" results.cb(req) results:", JSON.stringify(results.cb(req)));
+    //   console.log("results.cb() results:", JSON.stringify(results.cb()));
+    //   return results.cb();
+    // });
     // return response;
+
+
+    (async () => {
+      try {
+        const module = new MeditationModule()
+        var promise = await module.intentResponse(req);
+
+        console.log("promise", promise);
+
+        return promise(req);
+
+      } catch (e) {
+
+        console.log("e", e);
+
+      }
+
+    })();
+
+
+
   },
 };
 

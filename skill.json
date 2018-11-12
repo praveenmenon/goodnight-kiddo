@@ -5,11 +5,11 @@
         "en-US": {
           "summary": "Sample Short Description",
           "examplePhrases": [
-            "Alexa open goodnight",
-            "Alexa tell goodnight hello",
-            "Alexa ask goodnight say hello"
+            "Alexa open goodnight test",
+            "Alexa tell goodnight test hello",
+            "Alexa ask goodnight test say hello"
           ],
-          "name": "goodnight-kiddo",
+          "name": "goodnight-kiddo-test",
           "description": "Sample Full Description"
         }
       },

@@ -8,7 +8,7 @@ const EchoShowTemplateModule = require('../echoShowTemplate');
 const show = new EchoShowTemplateModule();
 
 function MeditationModule() {
-  this.intentResponse = function(req) {
+  this.intentResponse = async function(req) {
     const session = req.attributesManager.getSessionAttributes();
     // const intentSession = res.session('intentName');
     const arrayNum = getResolvedValue(req.requestEnvelope, 'arrayNumSlot') || '';
@@ -17,7 +17,8 @@ function MeditationModule() {
     var response, stream, medNameSlot, cb;
 
     // if (getResolvedValue(req.requestEnvelope, 'MeditationNameSlot')) medNameSlot = SynonymsResolveModule.extract('MeditationNameSlot', req);
-    if (req.requestEnvelope.request.type == 'Display.ElementSelected') medNameSlot = getResolvedValue(req.requestEnvelope, 'MeditationNameSlot');
+    // if (req.requestEnvelope.request.type == 'Display.ElementSelected') medNameSlot = getResolvedValue(req.requestEnvelope, 'MeditationNameSlot');
+    medNameSlot = getResolvedValue(req.requestEnvelope, 'MeditationNameSlot');
     console.log('req.slot(MeditationNameSlot):', getResolvedValue(req.requestEnvelope, 'MeditationNameSlot'));
     console.log('req.slot(MeditationName):', getResolvedValue(req.requestEnvelope, 'MeditationName'));
     console.log('Meditation Name', medNameSlot);
@@ -123,17 +124,88 @@ function MeditationModule() {
           default:
             var prompt = 'I couldn\'t find that meditation. Would you like to listen to calm, ocean, clouds or flying?';
         }
-        if (audioName) {
-          let promise = new Promise((resolve, reject) => {
-            console.log('deviceID', deviceID);
-            databaseHelper.saveAudioState(deviceID, stream.token, playBackFinished, stream.offsetInMilliseconds, audioName, stream.url, (err, result) => {
-              if (err) return reject(err);
-              else return resolve(result);
-            });
-          });
 
-          return promise.then((successMessage) => {
-            cb = function(req) {
+
+        // if (audioName) {
+        //   let promise = new Promise((resolve, reject) => {
+        //     console.log('deviceID', deviceID);
+        //     databaseHelper.saveAudioState(deviceID, stream.token, playBackFinished, stream.offsetInMilliseconds, audioName, stream.url, (err, result) => {
+        //       if (err) return reject(err);
+        //       else return resolve(result);
+        //     });
+        //   });
+
+        //   return promise.then((successMessage) => {
+        //     cb = function(req) {
+        //       var start;
+
+        //       if (session.cancelSession) {
+        //         start = 'You\'ve selected';
+        //       } else {
+        //         start = RandomModule.meditationFirst[Math.floor(Math.random() * RandomModule.meditationFirst.length)];
+        //       }
+
+        //       var end = RandomModule.meditationLast[Math.floor(Math.random() * RandomModule.meditationLast.length)];
+        //       var resp = start + ' ' + response + ' ' + end + ' <break time=\"3.00s\"/>';
+        //       if (req.requestEnvelope.context.System.device.supportedInterfaces.Display) {
+        //         const playTemplate = [{
+        //           'type': 'AudioPlayer.Play',
+        //           'playBehavior': 'REPLACE_ALL',
+        //           'audioItem': {
+        //             'stream': {
+        //               'url': stream.url,
+        //               'token': stream.token,
+        //               'offsetInMilliseconds': 0
+        //             },
+        //             'metadata': {
+        //               'title': cardTitle,
+        //               'subtitle': "Goodnight Kiddo",
+        //               'art': {
+        //                 'sources': [{
+        //                   'url': AudioModule.audioNavigation[stream.token].audioImage
+        //                 }]
+        //               },
+        //               'backgroundImage': {
+        //                 'sources': [{
+        //                   'url': AudioModule.audioNavigation[stream.token].backgroundImage
+        //                 }]
+        //               }
+        //             }
+        //           }
+        //         }];
+        //         req.responseBuilder.addDirective(playTemplate);
+        //       } else {
+        //         // have to change this to new sdk
+        //         req.responseBuilder.addAudioPlayerPlayDirective('REPLACE_ALL', stream);
+        //       }
+        //       req.responseBuilder.withStandardCard(
+        //         cardTitle,
+        //         cardText,
+        //         'https://s3.amazonaws.com/goodnight-kiddo-alexa-card-images/rsz_ms_gnk_alexa_skill_small.jpg',
+        //         'https://s3.amazonaws.com/goodnight-kiddo-alexa-card-images/rsz_ms_gnk_alexa_skill_large.jpg'
+        //       ).withShouldEndSession(true);
+        //     };
+        //     return new Promise((resolve) => {
+        //       resolve({
+        //         prompt,
+        //         cb
+        //       });
+        //     });
+        //   });
+        // }
+
+
+        if (audioName) {
+          console.log("audioName in if condn", audioName);
+
+          try {
+
+            let aa = await databaseHelper.saveAudioState(deviceID, stream.token, playBackFinished, stream.offsetInMilliseconds, audioName, stream.url);
+
+            console.log("aa in if condn", aa);
+
+
+            cb = (req) => {
               var start;
 
               if (session.cancelSession) {
@@ -144,7 +216,9 @@ function MeditationModule() {
 
               var end = RandomModule.meditationLast[Math.floor(Math.random() * RandomModule.meditationLast.length)];
               var resp = start + ' ' + response + ' ' + end + ' <break time=\"3.00s\"/>';
+
               if (req.requestEnvelope.context.System.device.supportedInterfaces.Display) {
+
                 const playTemplate = [{
                   'type': 'AudioPlayer.Play',
                   'playBehavior': 'REPLACE_ALL',
@@ -170,25 +244,36 @@ function MeditationModule() {
                     }
                   }
                 }];
-                req.responseBuilder.addDirective(playTemplate);
+
+                req.responseBuilder.addDirective(playTemplate).getResponse();
+                // resolve();
+
               } else {
                 // have to change this to new sdk
-                req.responseBuilder.addAudioPlayerPlayDirective('REPLACE_ALL', stream);
+                req.responseBuilder.addAudioPlayerPlayDirective('REPLACE_ALL', stream).getResponse();
+                // resolve();
               }
+
               req.responseBuilder.withStandardCard(
                 cardTitle,
                 cardText,
                 'https://s3.amazonaws.com/goodnight-kiddo-alexa-card-images/rsz_ms_gnk_alexa_skill_small.jpg',
                 'https://s3.amazonaws.com/goodnight-kiddo-alexa-card-images/rsz_ms_gnk_alexa_skill_large.jpg'
-              ).withShouldEndSession(true);
-            };
+              ).withShouldEndSession(true).getResponse();
+              // resolve();
+
+            }
+
             return new Promise((resolve) => {
-              resolve({
-                prompt,
-                cb
-              });
+              console.log("resolving promise")
+              resolve(cb);
             });
-          });
+
+          } catch (e) {
+
+            console.log("e", e);
+
+          }
         } else {
           console.log(prompt);
           cb = function(req) {
@@ -198,7 +283,7 @@ function MeditationModule() {
       } else {
         var start = RandomModule.error[Math.floor(Math.random() * RandomModule.error.length)];
         response = start + ', I didn\'t catch that. I can help you drift off to sweet dreams. Would you like to listen to Calm, Ocean, Clouds or Flying ?';
-        console.log(response);
+        console.log("this response 1---", response);
         cb = function(req) {
           req.responseBuilder.speak(response).reprompt(response).withShouldEndSession(false).getResponse();
         };
@@ -206,7 +291,7 @@ function MeditationModule() {
     } else if (req.requestEnvelope.request.intent.name == 'meditationIntent') {
       var start = RandomModule.error[Math.floor(Math.random() * RandomModule.error.length)];
       response = start + ', I didn\'t catch that. I can help you drift off to sweet dreams. Would you like to listen to Calm, Ocean, Clouds or Flying ?';
-      console.log(response);
+      console.log("this response 2---", response);
       cb = function(req) {
         attributes.intentName = 'meditation';
         attributes.cancelSession = 'cancel_true';
@@ -221,11 +306,8 @@ function MeditationModule() {
 
     return new Promise((resolve) => {
       console.log("callback:", cb);
-      console.log("prompt:", response);
-      return resolve({
-        response,
-        cb
-      });
+      // console.log("prompt:", response);
+      return resolve(cb);
     });
 
   };

@@ -13,7 +13,28 @@ const docClient = new AWS.DynamoDB.DocumentClient(credentials);
 
 function GoodnightKiddoSkillHelper() {}
 
-GoodnightKiddoSkillHelper.prototype.saveAudioState = function(deviceId, token, playbackFinished, offset, audioName, url, callback) {
+// GoodnightKiddoSkillHelper.prototype.saveAudioState = function(deviceId, token, playbackFinished, offset, audioName, url, callback) {
+//   const params = {
+//     TableName: tableName + '-audio-state',
+//     Item: {
+//       deviceId: deviceId,
+//       token: token,
+//       playbackFinished: playbackFinished,
+//       offset: offset,
+//       audioName: audioName,
+//       url: url,
+//       sessionTimestamp: new Date()
+//     }
+//   };
+
+//   docClient.put(params, function(err, data) {
+//     if (err) callback(err, null);
+//     else callback(err, data);
+//   });
+// };
+
+
+GoodnightKiddoSkillHelper.prototype.saveAudioState = function(deviceId, token, playbackFinished, offset, audioName, url) {
   const params = {
     TableName: tableName + '-audio-state',
     Item: {
@@ -27,11 +48,21 @@ GoodnightKiddoSkillHelper.prototype.saveAudioState = function(deviceId, token, p
     }
   };
 
-  docClient.put(params, function(err, data) {
-    if (err) callback(err, null);
-    else callback(err, data);
+  console.log("params", params);
+
+  return new Promise((resolve, reject) => {
+    docClient.put(params, function(err, data) {
+      console.log("err in db", err);
+      if (err) return reject(err);
+      else {
+        console.log("data in db", data);
+        return resolve(data);
+      }
+    });
   });
 };
+
+
 
 GoodnightKiddoSkillHelper.prototype.updateAudioState = function(tableData, callback) {
   console.log("inside updateAudioState: ", tableData);

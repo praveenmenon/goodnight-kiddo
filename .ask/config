@@ -35,6 +35,42 @@
           }
         ]
       }
+    },
+    "meditation-studio": {
+      "skill_id": "amzn1.ask.skill.7086e004-ad24-4130-9581-bce1053fe627",
+      "was_cloned": false,
+      "merge": {
+        "manifest": {
+          "apis": {
+            "custom": {
+              "endpoint": {
+                "uri": "ask-custom-goodnight-kiddo-test-meditation-studio"
+              }
+            }
+          }
+        }
+      },
+      "resources": {
+        "manifest": {
+          "eTag": "0ac255dae6deb1408ae29f2a51e61e09"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "1eeb664cdd5e167d3a118d8e56622fe2"
+          }
+        },
+        "lambda": [
+          {
+            "arn": "arn:aws:lambda:us-east-1:316322997689:function:ask-custom-goodnight-kiddo-test-meditation-studio",
+            "functionName": "arn:aws:lambda:us-east-1:316322997689:function:ask-custom-goodnight-kiddo-test-meditation-studio",
+            "awsRegion": "us-east-1",
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "revisionId": "a072b83c-f524-4090-9593-1faad8090c1a"
+          }
+        ]
+      }
     }
   }
 }
