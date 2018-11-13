@@ -257,67 +257,58 @@ const ErrorHandler = {
   },
 };
 
-const MeditationIntent = {
+const meditationIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' && handlerInput.requestEnvelope.request.intent.name === 'meditationIntent';
   },
-  handle(req, error){
-    // const response = genericIntentModuleHandler(handlerInput, new MeditationModule());
-    // console.log("response in meditation intent:", JSON.stringify(response))
-    const module = new MeditationModule();
-    var promise = module.intentResponse(req);
-    return promise.then(function(results) {
-      console.log(" results.cb(req) results:", JSON.stringify(results.cb(req)));
-      console.log("results.cb() results:", JSON.stringify(results.cb()));
-      return results.cb();
-    });
-    // return response;
+  handle(handlerInput){
+
+    const {
+      attributesManager,
+      responseBuilder
+    } = handlerInput;
+
+    const session = handlerInput.attributesManager.getSessionAttributes();
+    const arrayNum = getResolvedValue(handlerInput.requestEnvelope, 'arrayNumSlot') || '';
+    var response, stream, medNameSlot, cb;
+
+    stream = {
+      'url': 'https://s3.amazonaws.com/goodnight-kiddo-alexa/Calm.mp3',
+      'token': "calm",
+      'offsetInMilliseconds': 0
+    };
+    console.log("stream:", JSON.stringify(stream));
+    handlerInput.responseBuilder.withShouldEndSession(true).addAudioPlayerPlayDirective('REPLACE_ALL', stream.url, stream.token, stream.offsetInMilliseconds, null);
+    return handlerInput.responseBuilder.getResponse();
   },
 };
 
-const genericIntentModuleHandler = function(req, module) {
-  var promise = module.intentResponse(req);
-  console.log("promise:", promise);
-  return promise.then(function(results) {
-    results.cb(req);
-  });
-};
 
-const YesHandler = {
+const arrayNumberHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
-      handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent';
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' && handlerInput.requestEnvelope.request.intent.name === 'arrayNumber';
   },
-  handle(handlerInput) {
-    var promise = null;
-    console.log('In YesHandler');
-    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-    const precedingIntentName = sessionAttributes.intentName;
-    const imodule = getModuleByIntent(precedingIntentName);
+  handle(handlerInput){
+    const {
+      attributesManager,
+      responseBuilder
+    } = handlerInput;
 
-
-    if (imodule) {
-      promise = imodule.yesIntentResponse(handlerInput);
-      return promise.then(function(intentResponse) {
-        intentResponse.cb(req);
-      });
-    } else {
-      var prompt = 'I did not quite get that. Could you please repeat it?';
-      return intentResponse.responseBuilder.speak(prompt).withShouldEndSession(false).getResponse();
-    }
+    const session = handlerInput.attributesManager.getSessionAttributes();
+    const arrayNum = getResolvedValue(handlerInput.requestEnvelope, 'arrayNumSlot') || '';
+    var response, stream, medNameSlot, cb;
+    stream = {
+      'url': 'https://s3.amazonaws.com/goodnight-kiddo-alexa/Calm.mp3',
+      'token': "calm",
+      'offsetInMilliseconds': 0
+    };
+    console.log("stream:", JSON.stringify(stream));
+    handlerInput.responseBuilder.withShouldEndSession(true).addAudioPlayerPlayDirective('REPLACE_ALL', stream.url, stream.token, stream.offsetInMilliseconds, 'flying').getResponse();;
+    return handlerInput.responseBuilder.getResponse();
   },
 };
 
 
-const getModuleByIntent = function(intentName) {
-  var module = null;
-  if (intentName === 'meditationIntent') {
-    module = new MeditationModule();
-  } else if (intentName === 'launchIntent') {
-    module = new MeditationModule();
-  }
-  return module;
-};
 
 const skillBuilder = Alexa.SkillBuilders.custom();
 
@@ -329,7 +320,7 @@ exports.handler = skillBuilder
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler,
     MeditationIntent,
-    YesHandler
+    arrayNumberHandler
   )
   .addErrorHandlers(ErrorHandler)
   .lambda();

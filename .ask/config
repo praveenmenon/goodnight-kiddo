@@ -1,7 +1,7 @@
 {
   "deploy_settings": {
     "meditationstudioapp": {
-      "skill_id": "amzn1.ask.skill.ae82c69e-df56-45db-ae4b-fbd390d57282",
+      "skill_id": "amzn1.ask.skill.3610484b-f4c9-4ccb-9525-ff8d2dc4eb5a",
       "was_cloned": false,
       "merge": {
         "manifest": {
@@ -31,7 +31,7 @@
             "alexaUsage": [
               "custom/default"
             ],
-            "revisionId": "1d6a4220-4a2e-4a70-931d-08fdacffd14a"
+            "revisionId": "af49afe0-ff75-4b06-bb87-9a4069b445fd"
           }
         ]
       }
